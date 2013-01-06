@@ -31,6 +31,7 @@ private slots:
 
 private:
 
+    void list_folders_header_to_stream (QDir&, QTextStream&) const;
     void list_folders_to_stream (QDir&, QTextStream&, int&) const;
     void folder_to_stream (const QFileInfo&, QTextStream&) const;
     void file_to_stream (const QFileInfo&, QTextStream&) const;

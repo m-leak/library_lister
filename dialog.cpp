@@ -23,13 +23,17 @@ void Dialog::setupDialog(const LibraryListerConfig *libraryListerConfig)
     setIncludeFolderContentQty(libraryListerConfig->getIncludeFolderContentQty());
     setIncludeFileSize(libraryListerConfig->getIncludeFileSize());
     setIncludeFileTime(libraryListerConfig->getIncludeFileTime());
+    setIncludeFileDuration(libraryListerConfig->getIncludeFileDuration());
 }
 
 void Dialog::on_pushButton_clicked()
 {
     QString qString = QFileDialog::getSaveFileName(this, tr("Save File"),getOutputFilePath());
 
-    ui->lineEdit->setText(qString);
+    if (qString.length())
+    {
+        ui->lineEdit->setText(qString);
+    }
 }
 
 QString Dialog::getOutputFilePath() const
@@ -90,4 +94,14 @@ bool Dialog::getIncludeFileTime() const
 void Dialog::setIncludeFileTime(const bool& value)
 {
     ui->checkBox_4->setChecked(value);
+}
+
+bool Dialog::getIncludeFileDuration() const
+{
+    return ui->checkBox_5->isChecked();
+}
+
+void Dialog::setIncludeFileDuration(const bool& value)
+{
+    ui->checkBox_5->setChecked(value);
 }

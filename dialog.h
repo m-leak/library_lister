@@ -37,6 +37,9 @@ public:
     bool getIncludeFileTime() const;
     void setIncludeFileTime(const bool&);
 
+    bool getIncludeFileDuration() const;
+    void setIncludeFileDuration(const bool&);
+
 private slots:
     void on_pushButton_clicked();
 

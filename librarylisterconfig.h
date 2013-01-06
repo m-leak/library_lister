@@ -33,8 +33,13 @@ public:
     bool getIncludeFileTime() const;
     void setIncludeFileTime(const bool&);
 
+    bool getIncludeFileDuration() const;
+    void setIncludeFileDuration(const bool&);
+
     static const QString OUTPUT_FILE_SEPARATOR;
     static const QString OUTPUT_FILE_OFFSET;
+    static const QString OUTPUT_FILE_HEADER_SEPARATOR;
+    static const int OUTPUT_FILE_HEADER_SEPARATOR_NUM;
 
 protected:
 private:
@@ -44,6 +49,7 @@ private:
     bool _includeFolderContentQty;
     bool _includeFileSize;
     bool _includeFileTime;
+    bool _includeFileDuration;
 
     static const QString CONFIG_FILE_NAME;
     static const QString OUTPUT_FILE_NAME;

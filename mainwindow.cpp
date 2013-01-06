@@ -26,7 +26,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    QString qString = QFileDialog::getExistingDirectory(this, tr("Browse for a directory"),                                                    QDir::homePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString defaultPath = this->ui->label_3->text().length() ? this->ui->label_3->text() : QDir::homePath();
+
+    QString qString = QFileDialog::getExistingDirectory(this, tr("Browse for a directory"),                                                    defaultPath, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (qString.length())
     {
@@ -48,6 +50,7 @@ void MainWindow::on_pushButton_2_clicked()
         _libraryListerConfig->setIncludeFolderContentQty(dialog.getIncludeFolderContentQty());
         _libraryListerConfig->setIncludeFileSize(dialog.getIncludeFileSize());
         _libraryListerConfig->setIncludeFileTime(dialog.getIncludeFileTime());
+        _libraryListerConfig->setIncludeFileDuration(dialog.getIncludeFileDuration());
 
         _libraryListerConfig->serializeToFile();
     }
@@ -70,7 +73,36 @@ void MainWindow::list_folders_to_file_wraper() const
     QTextStream qTextStream(&qFile);
 
     int levelOfSubcategory = 0;
+
+    list_folders_header_to_stream(qDir, qTextStream);
     list_folders_to_stream(qDir, qTextStream, levelOfSubcategory);
+}
+
+void MainWindow::list_folders_header_to_stream(QDir& qDir, QTextStream& qTextStream) const
+{
+    qTextStream <<
+                   LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR.repeated
+                   (
+                       LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR_NUM
+                   )
+                << endl;
+
+    qTextStream << LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR << endl;
+
+    qTextStream << QString("%1 Path: %2 Timestamp: %3").
+                   arg(LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR).
+                   arg(qDir.absolutePath()).
+                   arg(QDateTime::currentDateTime().toString())
+                << endl;
+
+    qTextStream << LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR << endl;
+
+    qTextStream <<
+                   LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR.repeated
+                   (
+                       LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR_NUM
+                   )
+                << endl << endl;
 }
 
 void MainWindow::list_folders_to_stream(QDir& qDir, QTextStream& qTextStream, int& levelOfSubcategory) const
@@ -83,13 +115,13 @@ void MainWindow::list_folders_to_stream(QDir& qDir, QTextStream& qTextStream, in
         return;
     }
 
-    QFileInfoList qFileInfoList = qDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Size | QDir::DirsFirst);
+    QFileInfoList qFileInfoList = qDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::DirsFirst);
 
     for (int i = 0; i < qFileInfoList.size(); ++i)
     {
         QFileInfo qFileInfo = qFileInfoList.at(i);
 
-        // qTextStream << LibraryListerConfig::OUTPUT_FILE_OFFSET.repeated(levelOfSubcategory - 1);
+        qTextStream << LibraryListerConfig::OUTPUT_FILE_OFFSET.repeated(levelOfSubcategory - 1);
         if (qFileInfo.isDir())
         {
             folder_to_stream(qFileInfo, qTextStream);
@@ -101,7 +133,7 @@ void MainWindow::list_folders_to_stream(QDir& qDir, QTextStream& qTextStream, in
             file_to_stream(qFileInfo, qTextStream);
         }
     }
-    // qTextStream << endl;
+    qTextStream << endl;
 
     --levelOfSubcategory;
 }

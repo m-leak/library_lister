@@ -7,6 +7,8 @@
 
 const QString LibraryListerConfig::OUTPUT_FILE_SEPARATOR = QString(" | ");
 const QString LibraryListerConfig::OUTPUT_FILE_OFFSET = QString("\t");
+const QString LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR = QString("#");
+const int LibraryListerConfig::OUTPUT_FILE_HEADER_SEPARATOR_NUM = 80;
 
 const QString LibraryListerConfig::CONFIG_FILE_NAME = QString("config.txt");
 const QString LibraryListerConfig::OUTPUT_FILE_NAME = QString("output.txt");
@@ -18,6 +20,7 @@ QDataStream& operator << (QDataStream& qDataStream, const LibraryListerConfig& l
                        << libraryListerConfig._includeFolderContentQty
                        << libraryListerConfig._includeFileSize
                        << libraryListerConfig._includeFileTime
+                       << libraryListerConfig._includeFileDuration
            ;
 }
 
@@ -28,6 +31,7 @@ QDataStream& operator >> (QDataStream& qDataStream, LibraryListerConfig& library
                        >> libraryListerConfig._includeFolderContentQty
                        >> libraryListerConfig._includeFileSize
                        >> libraryListerConfig._includeFileTime
+                       >> libraryListerConfig._includeFileDuration
            ;
 }
 
@@ -38,6 +42,7 @@ LibraryListerConfig::LibraryListerConfig() : _outputFilePath(QCoreApplication::a
     setIncludeFolderContentQty(false);
     setIncludeFileSize(false);
     setIncludeFileTime(false);
+    setIncludeFileDuration(false);
 }
 
 void LibraryListerConfig::serializeToFile()
@@ -125,3 +130,14 @@ void LibraryListerConfig::setIncludeFileTime(const bool& value)
 {
     _includeFileTime = value;
 }
+
+bool LibraryListerConfig::getIncludeFileDuration() const
+{
+    return _includeFileDuration;
+}
+
+void LibraryListerConfig::setIncludeFileDuration(const bool& value)
+{
+    _includeFileDuration = value;
+}
+
